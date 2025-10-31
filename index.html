@@ -60,6 +60,23 @@
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 0 0 2px #f97316; /* Orange focus ring */
         }
+        
+        /* --- NEW: Custom Scrollbar for Reels --- */
+        .reels-container::-webkit-scrollbar {
+            height: 6px; /* Thinner for horizontal */
+        }
+        .reels-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .reels-container::-webkit-scrollbar-thumb {
+            background: #f97316; /* bg-orange-500 */
+            border-radius: 3px;
+        }
+        .reels-container::-webkit-scrollbar-thumb:hover {
+            background: #ea580c; /* bg-orange-600 */
+        }
+        /* --- END OF NEW CSS --- */
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
@@ -133,7 +150,6 @@
                 <div class="featured-video shadow-2xl rounded-xl overflow-hidden glass-effect"> <!-- Added glass-effect here for consistency -->
                     <!-- Responsive iframe wrapper -->
                     <div class="aspect-w-16 aspect-h-9">
-                        <!-- === REPLACED iframe WITH video TAG === -->
                         <video class="w-full h-full" 
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/0_32__CID%20EPISODE%2036%20_%20Purav%20Jha%20_%20Elvish%20Yadav%20_%20ACP%20Pradyuman%20Funny%20Dubbing%20_%20AB%20Black.mp4" 
                                autoplay 
@@ -143,10 +159,50 @@
                                controls>
                             Your browser does not support the video tag.
                         </video>
-                        <!-- === END OF REPLACEMENT === -->
                     </div>
                 </div>
             </section>
+
+            <!-- === NEW REEL SECTION === -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold mb-6 border-l-4 border-orange-500 pl-4">Shorts & Reels</h2>
+                
+                <!-- Horizontal scrolling container -->
+                <div class="reels-container flex overflow-x-auto space-x-6 py-4">
+                    
+                    <!-- Reel 1 -->
+                    <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
+                        <video class="w-full h-full object-cover" 
+                               src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/Chodu%20CID%20Funny%20Template%20%23cid%20%23funny%20%23shorts%20%23fyp%E3%82%B7%E3%82%9Aviral%20%23viral%20%23nostalgia.mp4"
+                               loop muted playsinline controls preload="metadata"></video>
+                    </div>
+                    
+                    <!-- Reel 2 -->
+                    <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
+                        <video class="w-full h-full object-cover" 
+                               src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/CHODU%20CID%20memes%20funny%20cid%20%F0%9F%92%80%23shorts%20%23cid%20%23cidmemes%20%23trending%20%23video%20%23youtube.mp4"
+                               loop muted playsinline controls preload="metadata"></video>
+                    </div>
+
+                    <!-- Reel 3 -->
+                    <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
+                        <video class="w-full h-full object-cover" 
+                               src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/Introducing%20Chodu%20CID%20%F0%9F%92%80%F0%9F%92%80%E2%98%A0%EF%B8%8F%20%20%23funny%20%23edits%20%23meme%20%23shorts%20%23viral.mp4"
+                               loop muted playsinline controls preload="metadata"></video>
+                    </div>
+
+                    <!-- Reel 4 -->
+                    <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
+                        <video class="w-full h-full object-cover" 
+                               src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/chodu%20cid%20%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%23shortvideos%20%23youtubeshorts%20%23funny%20%23cidindanger%20%23viralshorts%20%23public.mp4"
+                               loop muted playsinline controls preload="metadata"></video>
+                    </div>
+                    
+                    <!-- You could add more reel blocks here -->
+
+                </div>
+            </section>
+            <!-- === END OF REEL SECTION === -->
 
             <!-- Video Grid -->
             <section>
@@ -209,7 +265,7 @@
 
         <!-- Footer -->
         <footer class="text-center py-10 mt-16 border-t border-gray-700/50">
-            <p class_="text-gray-400">&copy; 2025 ChoduCID. All rights reserved.</p>
+            <p class="text-gray-400">&copy; 2025 ChoduCID. All rights reserved.</p>
             <p class="text-gray-500 text-sm">A modern, SFW video platform example.</p>
         </footer>
         
