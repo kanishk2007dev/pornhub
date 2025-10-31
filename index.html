@@ -6,9 +6,7 @@
     <title>Modern Video Hub</title>
     <!-- 1. Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 2. Load Three.js (for 3D background) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- 3. Custom Styles and Font -->
+    <!-- 2. Custom Styles and Font -->
     <style>
         /* Import the Inter font */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -18,15 +16,28 @@
             overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
-        /* 3D Canvas for background */
-        #bg-canvas {
+        /* --- NEW: Video Background --- */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh; /* Full viewport height */
+            object-fit: cover; /* Cover the entire screen */
+            z-index: -2; /* Behind overlay and content */
+        }
+        
+        /* Overlay to darken the video */
+        .video-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: -1; /* Place it behind all content */
+            background-color: rgba(0, 0, 0, 0.6); /* 60% black overlay */
+            z-index: -1; /* Behind content, on top of video */
         }
+        /* --- END NEW --- */
 
         /* Glassmorphism class */
         .glass-effect {
@@ -80,8 +91,12 @@
 </head>
 <body class="bg-gray-900 text-gray-100">
 
-    <!-- 3D Background Canvas -->
-    <canvas id="bg-canvas"></canvas>
+    <!-- NEW Video Background -->
+    <div class="video-overlay"></div>
+    <video autoplay loop muted playsinline id="bg-video">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/d/df/Carruthers_Geocorona_Animation_%28SVS20407%29.webm/Carruthers_Geocorona_Animation_%28SVS20407%29.webm.720p.vp9.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
 
     <!-- Background Audio (hidden) -->
     <audio id="background-audio" loop class="hidden">
@@ -284,137 +299,47 @@
 
     <!-- JAVASCRIPT SECTION -->
     <script>
-        // --- 1. Audio Autoplay on First Click ---
+        // --- 1. Audio & BG Video Autoplay on First Click ---
         document.addEventListener('click', function() {
-            var audio = document.getElementById('background-audio');
-            if (audio.paused) {
-                audio.play().catch(e => console.log("Audio play failed: ", e));
+            const bgAudio = document.getElementById('background-audio');
+            const bgVideo = document.getElementById('bg-video');
+
+            if (bgAudio.paused) {
+                bgAudio.play().catch(e => console.log("Audio play failed: ", e));
+            }
+            if (bgVideo.paused) {
+                bgVideo.play().catch(e => console.log("BG Video play failed: ", e));
             }
         }, { once: true }); // 'once: true' means this will only happen on the very first click
 
-        // --- 2. 3D Background Animation ---
-        let scene, camera, renderer, shapes;
-
-        function init3D() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            const canvas = document.getElementById('bg-canvas');
-            renderer = new THREE.WebGLRenderer({
-                canvas: canvas,
-                alpha: true // Transparent background
-            });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // --- Create Shapes ---
-            shapes = [];
-            const geometry = new THREE.IcosahedronGeometry(1, 0); // A 20-sided shape
-            const material = new THREE.MeshStandardMaterial({
-                color: 0x333333, // Dark grey
-                metalness: 0.1,
-                roughness: 0.8,
-                wireframe: true // Looks technical and modern
-            });
-
-            for (let i = 0; i < 100; i++) {
-                const mesh = new THREE.Mesh(geometry, material);
-                
-                // Position randomly in a large box
-                mesh.position.set(
-                    (Math.random() - 0.5) * 50,
-                    (Math.random() - 0.5) * 50,
-                    (Math.random() - 0.5) * 50
-                );
-                
-                // Random size
-                const scale = Math.random() * 0.2 + 0.1;
-                mesh.scale.set(scale, scale, scale);
-                
-                // Random rotation
-                mesh.rotation.set(
-                    Math.random() * 2 * Math.PI,
-                    Math.random() * 2 * Math.PI,
-                    Math.random() * 2 * Math.PI
-                );
-
-                // Store random rotation speeds
-                mesh.userData.rotSpeed = {
-                    x: (Math.random() - 0.5) * 0.005,
-                    y: (Math.random() - 0.5) * 0.005
-                };
-                
-                shapes.push(mesh);
-                scene.add(mesh);
-            }
-
-            // --- Lights ---
-            const ambientLight = new THREE.AmbientLight(0x555555); // Soft ambient light
-            scene.add(ambientLight);
-
-            const pointLight = new THREE.PointLight(0xf97316, 1, 100); // Orange light
-            pointLight.position.set(0, 10, 10);
-            scene.add(pointLight);
-
-            const pointLight2 = new THREE.PointLight(0x4f46e5, 1, 100); // Indigo light
-            pointLight2.position.set(10, -10, -10);
-            scene.add(pointLight2);
-
-            camera.position.z = 5;
-
-            // --- Handle Window Resize ---
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            animate();
-        }
-
-        // --- Animation Loop ---
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Animate shapes
-            shapes.forEach(shape => {
-                shape.rotation.x += shape.userData.rotSpeed.x;
-                shape.rotation.y += shape.userData.rotSpeed.y;
-            });
-            
-            // Animate camera
-            const time = Date.now() * 0.0001;
-            camera.position.x = Math.sin(time) * 2;
-            camera.position.y = Math.cos(time) * 1;
-            camera.lookAt(scene.position);
-
-            renderer.render(scene, camera);
-        }
-
-        // --- 3. Single Video Play Logic (NEW) ---
+        
+        // --- 2. Single Video Play Logic ---
         function initVideoPausing() {
-            const allVideos = document.querySelectorAll('#featured-video, .reel-video');
-            const audio = document.getElementById('background-audio');
+            const allContentVideos = document.querySelectorAll('#featured-video, .reel-video');
+            const bgAudio = document.getElementById('background-audio');
+            const bgVideo = document.getElementById('bg-video');
 
-            allVideos.forEach(video => {
+            allContentVideos.forEach(video => {
                 video.addEventListener('play', () => {
-                    // Pause all other videos
-                    allVideos.forEach(otherVideo => {
+                    // Pause all OTHER content videos
+                    allContentVideos.forEach(otherVideo => {
                         if (otherVideo !== video && !otherVideo.paused) {
                             otherVideo.pause();
                         }
                     });
 
-                    // Pause background audio
-                    if (audio && !audio.paused) {
-                        audio.pause();
+                    // Pause background audio & video
+                    if (bgAudio && !bgAudio.paused) {
+                        bgAudio.pause();
+                    }
+                    if (bgVideo && !bgVideo.paused) {
+                        bgVideo.pause();
                     }
                 });
             });
         }
 
         // --- Initialize all scripts ---
-        init3D();
         initVideoPausing(); // Call the new function
     </script>
 </body>
