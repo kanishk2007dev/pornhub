@@ -61,7 +61,7 @@
             box-shadow: 0 0 0 2px #f97316; /* Orange focus ring */
         }
         
-        /* --- NEW: Custom Scrollbar for Reels --- */
+        /* Custom Scrollbar for Reels */
         .reels-container::-webkit-scrollbar {
             height: 6px; /* Thinner for horizontal */
         }
@@ -76,7 +76,6 @@
         .reels-container::-webkit-scrollbar-thumb:hover {
             background: #ea580c; /* bg-orange-600 */
         }
-        /* --- END OF NEW CSS --- */
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
@@ -147,10 +146,11 @@
             <!-- Featured Video -->
             <section class="mb-12">
                 <h2 class="text-3xl font-bold mb-6 border-l-4 border-orange-500 pl-4">Featured Video</h2>
-                <div class="featured-video shadow-2xl rounded-xl overflow-hidden glass-effect"> <!-- Added glass-effect here for consistency -->
-                    <!-- Responsive iframe wrapper -->
+                <div class="featured-video shadow-2xl rounded-xl overflow-hidden glass-effect">
                     <div class="aspect-w-16 aspect-h-9">
+                        <!-- ADDED id="featured-video" -->
                         <video class="w-full h-full" 
+                               id="featured-video"
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/0_32__CID%20EPISODE%2036%20_%20Purav%20Jha%20_%20Elvish%20Yadav%20_%20ACP%20Pradyuman%20Funny%20Dubbing%20_%20AB%20Black.mp4" 
                                autoplay 
                                loop 
@@ -163,7 +163,7 @@
                 </div>
             </section>
 
-            <!-- === NEW REEL SECTION === -->
+            <!-- REEL SECTION (Horizontal Scroll) -->
             <section class="mb-12">
                 <h2 class="text-3xl font-bold mb-6 border-l-4 border-orange-500 pl-4">Shorts & Reels</h2>
                 
@@ -172,33 +172,43 @@
                     
                     <!-- Reel 1 -->
                     <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
-                        <video class="w-full h-full object-cover" 
+                        <!-- ADDED class="reel-video" -->
+                        <video class="w-full h-full object-cover reel-video" 
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/Chodu%20CID%20Funny%20Template%20%23cid%20%23funny%20%23shorts%20%23fyp%E3%82%B7%E3%82%9Aviral%20%23viral%20%23nostalgia.mp4"
                                loop muted playsinline controls preload="metadata"></video>
                     </div>
                     
                     <!-- Reel 2 -->
                     <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
-                        <video class="w-full h-full object-cover" 
+                        <!-- ADDED class="reel-video" -->
+                        <video class="w-full h-full object-cover reel-video" 
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/CHODU%20CID%20memes%20funny%20cid%20%F0%9F%92%80%23shorts%20%23cid%20%23cidmemes%20%23trending%20%23video%20%23youtube.mp4"
                                loop muted playsinline controls preload="metadata"></video>
                     </div>
 
                     <!-- Reel 3 -->
                     <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
-                        <video class="w-full h-full object-cover" 
+                        <!-- ADDED class="reel-video" -->
+                        <video class="w-full h-full object-cover reel-video" 
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/Introducing%20Chodu%20CID%20%F0%9F%92%80%F0%9F%92%80%E2%98%A0%EF%B8%8F%20%20%23funny%20%23edits%20%23meme%20%23shorts%20%23viral.mp4"
                                loop muted playsinline controls preload="metadata"></video>
                     </div>
 
                     <!-- Reel 4 -->
                     <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
-                        <video class="w-full h-full object-cover" 
+                        <!-- ADDED class="reel-video" -->
+                        <video class="w-full h-full object-cover reel-video" 
                                src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/chodu%20cid%20%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%F0%9F%98%85%23shortvideos%20%23youtubeshorts%20%23funny%20%23cidindanger%20%23viralshorts%20%23public.mp4"
                                loop muted playsinline controls preload="metadata"></video>
                     </div>
                     
-                    <!-- You could add more reel blocks here -->
+                    <!-- Reel 5 -->
+                    <div class="flex-shrink-0 w-56 h-96 rounded-lg glass-effect overflow-hidden shadow-lg transform hover:-translate-y-2 transition duration-300">
+                        <!-- ADDED class="reel-video" -->
+                        <video class="w-full h-full object-cover reel-video" 
+                               src="https://github.com/kanishk2007dev/pornhub/raw/refs/heads/main/Video-96.mp4"
+                               loop muted playsinline controls preload="metadata"></video>
+                    </div>
 
                 </div>
             </section>
@@ -381,7 +391,31 @@
             renderer.render(scene, camera);
         }
 
+        // --- 3. Single Video Play Logic (NEW) ---
+        function initVideoPausing() {
+            const allVideos = document.querySelectorAll('#featured-video, .reel-video');
+            const audio = document.getElementById('background-audio');
+
+            allVideos.forEach(video => {
+                video.addEventListener('play', () => {
+                    // Pause all other videos
+                    allVideos.forEach(otherVideo => {
+                        if (otherVideo !== video && !otherVideo.paused) {
+                            otherVideo.pause();
+                        }
+                    });
+
+                    // Pause background audio
+                    if (audio && !audio.paused) {
+                        audio.pause();
+                    }
+                });
+            });
+        }
+
+        // --- Initialize all scripts ---
         init3D();
+        initVideoPausing(); // Call the new function
     </script>
 </body>
 </html>
